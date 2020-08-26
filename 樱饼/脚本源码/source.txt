@@ -1,0 +1,134 @@
+Const jieshu_start_x = 0
+Const jieshu_start_y = 0
+
+Const jieshu_end_x = 1366
+Const jieshu_end_y = 800
+
+While True
+tryTiaozhan
+overFight 
+Wend
+
+Sub overFight
+	
+	For i = 1 To 180
+    	locateResult = locateFightEnd
+    	If locateResult Then 
+    		
+    		moveToClickArea
+        	
+        	delt = random(3, 5)
+        	Dim clickCount
+        	clickCount = 0
+        	For j = 1 To 30
+        		
+        		clickFlag = random(0, 2)
+        		If clickFlag >= 1 Then 
+        			clickTime = random(2, 6)
+        			For k = 1 To clickTime
+        				locateResult2 = locateFightEnd
+            			If locateResult2 Then 
+                			Call click(x, y, delt, delt)
+                			clickCount = clickCount + 1
+                			TracePrint(clickCount)
+            			Else 
+            				TracePrint("fight over")
+                			Exit Sub
+            			End If
+        			Next
+        		Else 
+        			Delay random(1000, 2500)
+        			TracePrint("click pause")
+        		End If
+        		
+        	Next
+        	
+        	Exit For
+    	End If
+    	Delay 1000
+	Next
+		
+End Sub
+
+Sub tryTiaozhan
+	For j = 1 TO 10
+        FindPic jieshu_start_x, jieshu_start_y, jieshu_end_x, jieshu_end_y,"Attachment:\tiaozhan.bmp",0.8,intX,intY
+		If intX > 0 And intY > 0 Then 
+			MoveTo intX, intY
+			Delay 2000
+			MoveTo intX + random(3, 20), intY + random(3, 50)
+			Delay 800
+			LeftClick 1
+			tryTiaozhan = True
+			Exit Sub
+		Else 
+			TracePrint("not found tiao zhan btn")
+		End If
+        Delay 1000
+    Next
+End Sub
+
+Function moveToClickArea
+	clickArea = random(0, 1)
+    If clickArea = 1 Then
+    	x = random(771, 1083)
+    	y = random(531, 632)
+        MoveTo x, y
+        Delay random(1000, 3000)
+    Else 
+        x = random(936, 1111)
+    	y = random(402, 647)
+        MoveTo x, y
+        Delay random(1000, 3000)
+    End If
+End Function
+
+Function locateFightEnd
+
+FindPic jieshu_start_x, jieshu_start_y, jieshu_end_x, jieshu_end_y,"Attachment:\tongji.bmp",0.8,intX,intY
+If intX > 0 And intY > 0 Then 
+	MoveTo intX, intY
+	locateFightEnd = True
+Else 
+	TracePrint("waiting fight over...")
+End If
+
+End Function
+
+// 抖动点击，deltX, deltY抖动范围
+Sub click(mx, my, deltX, deltY)
+	
+	Dim minX, minY, maxX, maxY
+	
+	If deltX > 0 Then 
+		minX = mx
+		maxX = mx + deltX
+	Else 
+		minX = mx + deltX
+		maxX = mx
+	End If
+	
+	If deltY > 0 Then 
+		minY = my
+		maxY = my + deltY
+	Else 
+		minY = my + deltY
+		maxY = my
+	End If
+	
+	randX = random(minX, maxX)
+	randY = random(minY, maxY)
+	
+	MoveTo randX, randY
+	
+	Delay random(100,800)
+	
+	LeftClick 1
+	
+End Sub
+
+// 在[lowerbound, upperbound]中随机一个整数
+Function random(lowerbound,upperbound)
+	Randomize
+	random = Int((upperbound-lowerbound + 1) * Rnd + lowerbound)
+End Function
